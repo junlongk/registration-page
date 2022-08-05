@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Flex,
   Box,
@@ -8,7 +8,10 @@ import {
   Input,
   Textarea,
   Button,
+  Image,
+  Text,
 } from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
 
 const Form = () => {
   const defaultFields = {
@@ -19,8 +22,23 @@ const Form = () => {
   };
 
   const [userInput, setUserInput] = useState(defaultFields);
-  const [submit, setSubmit] = useState({});
+  const [submitInput, setSubmitInput] = useState({});
+  const [files, setFiles] = useState([]);
 
+  const fileInputField = useRef(null);
+
+  //Check if all input fields are empty
+  const isEmpty =
+    userInput.firstName === '' ||
+    userInput.lastName === '' ||
+    userInput.description === '' ||
+    userInput.email === '';
+
+  //Email validation
+  const emailRegEx = /^\S+@\S+\.\S+$/;
+  const emailTest = emailRegEx.test(userInput.email);
+
+  //Handler for input field changes
   const changeHandler = event => {
     const { name, value } = event.target;
     setUserInput({
@@ -29,19 +47,41 @@ const Form = () => {
     });
   };
 
+  //Handler for submit button
   const submitHandler = event => {
     event.preventDefault();
-    setSubmit(userInput);
+    setSubmitInput(userInput);
   };
 
-  const isEmpty =
-    userInput.firstName === '' ||
-    userInput.lastName === '' ||
-    userInput.description === '' ||
-    userInput.email === '';
+  //Utilize useRef to extract file input functionality to "Add Image" button
+  const uploadHandler = () => {
+    fileInputField.current.click();
+  };
 
-  const emailRegEx = /^\S+@\S+\.\S+$/;
-  const emailTest = emailRegEx.test(userInput.email);
+  //Handler for file uploads
+  const addFileHandler = event => {
+    let fileList = event.target.files;
+    let filesArr = [];
+    for (let i = 0; i < fileList.length; i++) {
+      filesArr.push(fileList[i]);
+    }
+    if (filesArr.length > 0) {
+      setFiles(files => [...files, ...filesArr]);
+    }
+  };
+
+  //Generate uploaded images to Image component
+  const listOfImages = files.map((file, key) => {
+    return (
+      <Image
+        boxSize="200px"
+        objectFit="cover"
+        src={URL.createObjectURL(file)}
+        key={key}
+        alt={file.name}
+      />
+    );
+  });
 
   return (
     <Flex
@@ -53,7 +93,10 @@ const Form = () => {
     >
       <form onSubmit={submitHandler}>
         <Flex direction="row" wrap="wrap" justify="space-evenly" gap="8px">
-          <Box minW={{ base: '318px', sm: '398px', md: '300px' }}>
+          <Box
+            minW={{ base: '318px', sm: '398px', md: '312px', lg: '420px' }}
+            minH="96px"
+          >
             <FormControl isRequired isInvalid={userInput.firstName === ''}>
               <FormLabel>First Name</FormLabel>
               <Input
@@ -67,7 +110,10 @@ const Form = () => {
             </FormControl>
           </Box>
 
-          <Box minW={{ base: '318px', sm: '398px', md: '300px' }}>
+          <Box
+            minW={{ base: '318px', sm: '398px', md: '312px', lg: '420px' }}
+            minH="96px"
+          >
             <FormControl isRequired isInvalid={userInput.lastName === ''}>
               <FormLabel>Last Name</FormLabel>
               <Input
@@ -82,7 +128,7 @@ const Form = () => {
           </Box>
         </Flex>
 
-        <Box my="8px">
+        <Box my="8px" minH="136px">
           <FormControl isRequired isInvalid={userInput.description === ''}>
             <FormLabel>Description</FormLabel>
             <Textarea
@@ -96,7 +142,7 @@ const Form = () => {
           </FormControl>
         </Box>
 
-        <Box my="8px">
+        <Box my="8px" minH="96px">
           <FormControl
             isRequired
             isInvalid={userInput.email === '' || !emailTest}
@@ -119,12 +165,40 @@ const Form = () => {
           </FormControl>
         </Box>
 
-        <Flex justify="flex-end" mt="32px">
+        <Flex direction="column">
+          {files.length > 0 && <Text my="8px">Images</Text>}
+          <Flex gap="16px" wrap="wrap">
+            {listOfImages}
+          </Flex>
+        </Flex>
+
+        <Flex justify="space-between" align="center" mt="32px">
+          <Button
+            leftIcon={<AddIcon />}
+            size="md"
+            variant="outline"
+            colorScheme="blue"
+            onClick={uploadHandler}
+            minW="140px"
+          >
+            Add Image
+            <input
+              type="file"
+              ref={fileInputField}
+              onChange={addFileHandler}
+              multiple
+              accept="image/*"
+              style={{ display: 'none' }}
+            />
+          </Button>
+
           <Button
             size="lg"
-            variant="outline"
+            variant="solid"
+            colorScheme="blue"
             type="submit"
             isDisabled={isEmpty || !emailTest}
+            minW="140px"
           >
             Save
           </Button>
