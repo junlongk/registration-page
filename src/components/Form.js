@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Flex,
   Box,
@@ -12,12 +12,16 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const Form = () => {
+const Form = ({ setSubmitted, setSubmitInput, setSubmitFiles }) => {
+  //Toggle form submitting progress
+  const [submitting, setSubmitting] = useState(false);
+  //User's input
   const [userInput, setUserInput] = useState({});
-  const [submitInput, setSubmitInput] = useState({});
+  //User's uploaded images
   const [files, setFiles] = useState([]);
-
+  //Utilize useRef to extract file input functionality
   const fileInputField = useRef(null);
 
   //Check if all input fields are empty
@@ -55,9 +59,17 @@ const Form = () => {
   const submitHandler = event => {
     event.preventDefault();
     setSubmitInput(userInput);
+    setSubmitFiles(files);
+    setSubmitting(true);
+
+    //Simulate API event
+    setTimeout(() => {
+      setSubmitting(false);
+      setSubmitted(true);
+    }, 3000);
   };
 
-  //Utilize useRef to extract file input functionality to "Add Image" button
+  //Extract file input functionality to "Add Image" button
   const uploadHandler = () => {
     fileInputField.current.click();
   };
@@ -74,7 +86,7 @@ const Form = () => {
     }
   };
 
-  //Generate uploaded images to Image component
+  //Generate uploaded images to Image component for preview
   const listOfImages = files.map((file, key) => {
     return (
       <Image
@@ -88,135 +100,152 @@ const Form = () => {
   });
 
   return (
-    <Flex
-      direction="column"
-      border="solid 1px"
-      borderRadius="8px"
-      p="20px"
-      maxW={{ base: '360px', sm: '440px', md: '720px', lg: '960px' }}
-    >
-      <form onSubmit={submitHandler}>
-        <Flex direction="row" wrap="wrap" justify="space-evenly" gap="8px">
-          <Box
-            minW={{ base: '318px', sm: '398px', md: '312px', lg: '420px' }}
-            minH="96px"
-          >
-            <FormControl isRequired isInvalid={userInput.firstName === ''}>
-              <FormLabel>First Name</FormLabel>
-              <Input
-                variant="filled"
-                value={userInput.firstName}
-                onFocus={focusHandler}
-                onChange={changeHandler}
-                name="firstName"
-                placeholder="John"
-                type="text"
-              />
-              <FormErrorMessage>First name is required.</FormErrorMessage>
-            </FormControl>
-          </Box>
+    <AnimatePresence>
+      <Flex
+        as={motion.div}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        direction="column"
+        borderRadius="8px"
+        p="20px"
+        maxW={{ base: '360px', sm: '440px', md: '720px', lg: '960px' }}
+        boxShadow="xl"
+      >
+        <form onSubmit={submitHandler}>
+          <Flex direction="row" wrap="wrap" justify="space-evenly" gap="8px">
+            <Box
+              minW={{ base: '318px', sm: '398px', md: '312px', lg: '420px' }}
+              minH="96px"
+            >
+              <FormControl isRequired isInvalid={userInput.firstName === ''}>
+                <FormLabel fontWeight="bold">First Name</FormLabel>
+                <Input
+                  variant="filled"
+                  value={userInput.firstName}
+                  onFocus={focusHandler}
+                  onChange={changeHandler}
+                  name="firstName"
+                  placeholder="John"
+                  type="text"
+                  isDisabled={submitting}
+                />
+                <FormErrorMessage>First name is required.</FormErrorMessage>
+              </FormControl>
+            </Box>
 
-          <Box
-            minW={{ base: '318px', sm: '398px', md: '312px', lg: '420px' }}
-            minH="96px"
-          >
-            <FormControl isRequired isInvalid={userInput.lastName === ''}>
-              <FormLabel>Last Name</FormLabel>
-              <Input
-                variant="filled"
-                value={userInput.lastName}
-                onFocus={focusHandler}
-                onChange={changeHandler}
-                name="lastName"
-                placeholder="Doe"
-                type="text"
-              />
-              <FormErrorMessage>Last name is required.</FormErrorMessage>
-            </FormControl>
-          </Box>
-        </Flex>
-
-        <Box my="8px" minH="136px">
-          <FormControl isRequired isInvalid={userInput.description === ''}>
-            <FormLabel>Description</FormLabel>
-            <Textarea
-              variant="filled"
-              value={userInput.description}
-              onFocus={focusHandler}
-              onChange={changeHandler}
-              name="description"
-              placeholder="My name is John Doe."
-            />
-            <FormErrorMessage>Please enter a description.</FormErrorMessage>
-          </FormControl>
-        </Box>
-
-        <Box my="8px" minH="96px">
-          <FormControl
-            isRequired
-            isInvalid={
-              userInput.email === '' || (userInput.email && !emailTest)
-            }
-          >
-            <FormLabel>Email</FormLabel>
-            <Input
-              variant="filled"
-              value={userInput.email}
-              onFocus={focusHandler}
-              onChange={changeHandler}
-              name="email"
-              placeholder="johndoe@abc.xyz"
-            />
-            {userInput.email && !emailTest ? (
-              <FormErrorMessage>
-                Please enter a valid email address.
-              </FormErrorMessage>
-            ) : (
-              <FormErrorMessage>Email is required.</FormErrorMessage>
-            )}
-          </FormControl>
-        </Box>
-
-        <Flex direction="column">
-          {files.length > 0 && <Text my="8px">Images</Text>}
-          <Flex gap="16px" wrap="wrap">
-            {listOfImages}
+            <Box
+              minW={{ base: '318px', sm: '398px', md: '312px', lg: '420px' }}
+              minH="96px"
+            >
+              <FormControl isRequired isInvalid={userInput.lastName === ''}>
+                <FormLabel fontWeight="bold">Last Name</FormLabel>
+                <Input
+                  variant="filled"
+                  value={userInput.lastName}
+                  onFocus={focusHandler}
+                  onChange={changeHandler}
+                  name="lastName"
+                  placeholder="Doe"
+                  type="text"
+                  isDisabled={submitting}
+                />
+                <FormErrorMessage>Last name is required.</FormErrorMessage>
+              </FormControl>
+            </Box>
           </Flex>
-        </Flex>
 
-        <Flex justify="space-between" align="center" mt="32px">
-          <Button
-            leftIcon={<AddIcon />}
-            size="md"
-            variant="outline"
-            colorScheme="blue"
-            onClick={uploadHandler}
-            minW="140px"
-          >
-            Add Image
-            <input
-              type="file"
-              ref={fileInputField}
-              onChange={addFileHandler}
-              multiple
-              accept="image/*"
-              style={{ display: 'none' }}
-            />
-          </Button>
+          <Box my="8px" minH="136px">
+            <FormControl isRequired isInvalid={userInput.description === ''}>
+              <FormLabel fontWeight="bold">Description</FormLabel>
+              <Textarea
+                variant="filled"
+                value={userInput.description}
+                onFocus={focusHandler}
+                onChange={changeHandler}
+                name="description"
+                placeholder="My name is John Doe."
+                isDisabled={submitting}
+              />
+              <FormErrorMessage>Please enter a description.</FormErrorMessage>
+            </FormControl>
+          </Box>
 
-          <Button
-            size="lg"
-            variant="solid"
-            colorScheme="blue"
-            type="submit"
-            isDisabled={isEmpty || !emailTest}
-            minW="140px"
-          >
-            Save
-          </Button>
-        </Flex>
-      </form>
-    </Flex>
+          <Box my="8px" minH="96px">
+            <FormControl
+              isRequired
+              isInvalid={
+                userInput.email === '' || (userInput.email && !emailTest)
+              }
+            >
+              <FormLabel fontWeight="bold">Email</FormLabel>
+              <Input
+                variant="filled"
+                value={userInput.email}
+                onFocus={focusHandler}
+                onChange={changeHandler}
+                name="email"
+                placeholder="johndoe@abc.xyz"
+                isDisabled={submitting}
+              />
+              {userInput.email && !emailTest ? (
+                <FormErrorMessage>
+                  Please enter a valid email address.
+                </FormErrorMessage>
+              ) : (
+                <FormErrorMessage>Email is required.</FormErrorMessage>
+              )}
+            </FormControl>
+          </Box>
+
+          <Flex direction="column">
+            {files.length > 0 && (
+              <Text my="8px" fontWeight="bold">
+                Images
+              </Text>
+            )}
+            <Flex gap="16px" wrap="wrap">
+              {listOfImages}
+            </Flex>
+          </Flex>
+
+          <Flex justify="space-between" align="center" mt="32px">
+            <Button
+              leftIcon={<AddIcon />}
+              size="md"
+              variant="outline"
+              colorScheme="green"
+              onClick={uploadHandler}
+              minW="140px"
+              isDisabled={submitting}
+            >
+              Add Image
+              <input
+                type="file"
+                ref={fileInputField}
+                onChange={addFileHandler}
+                multiple
+                accept="image/*"
+                style={{ display: 'none' }}
+              />
+            </Button>
+
+            <Button
+              size="lg"
+              variant="solid"
+              colorScheme="green"
+              type="submit"
+              isDisabled={isEmpty || !emailTest}
+              isLoading={submitting}
+              loadingText={submitting ? 'Saving' : null}
+              minW="140px"
+            >
+              Save
+            </Button>
+          </Flex>
+        </form>
+      </Flex>
+    </AnimatePresence>
   );
 };
 
