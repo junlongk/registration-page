@@ -14,14 +14,7 @@ import {
 import { AddIcon } from '@chakra-ui/icons';
 
 const Form = () => {
-  const defaultFields = {
-    firstName: '',
-    lastName: '',
-    description: '',
-    email: '',
-  };
-
-  const [userInput, setUserInput] = useState(defaultFields);
+  const [userInput, setUserInput] = useState({});
   const [submitInput, setSubmitInput] = useState({});
   const [files, setFiles] = useState([]);
 
@@ -29,16 +22,27 @@ const Form = () => {
 
   //Check if all input fields are empty
   const isEmpty =
-    userInput.firstName === '' ||
-    userInput.lastName === '' ||
-    userInput.description === '' ||
-    userInput.email === '';
+    !userInput.firstName ||
+    !userInput.lastName ||
+    !userInput.description ||
+    !userInput.email;
 
   //Email validation
   const emailRegEx = /^\S+@\S+\.\S+$/;
   const emailTest = emailRegEx.test(userInput.email);
 
-  //Handler for input field changes
+  //Handler for input field's onFocus toggle
+  const focusHandler = event => {
+    const { name, value } = event.target;
+    if (!value) {
+      setUserInput({
+        ...userInput,
+        [name]: '',
+      });
+    }
+  };
+
+  //Handler for input field's changes
   const changeHandler = event => {
     const { name, value } = event.target;
     setUserInput({
@@ -102,9 +106,11 @@ const Form = () => {
               <Input
                 variant="filled"
                 value={userInput.firstName}
+                onFocus={focusHandler}
                 onChange={changeHandler}
                 name="firstName"
                 placeholder="John"
+                type="text"
               />
               <FormErrorMessage>First name is required.</FormErrorMessage>
             </FormControl>
@@ -119,9 +125,11 @@ const Form = () => {
               <Input
                 variant="filled"
                 value={userInput.lastName}
+                onFocus={focusHandler}
                 onChange={changeHandler}
                 name="lastName"
                 placeholder="Doe"
+                type="text"
               />
               <FormErrorMessage>Last name is required.</FormErrorMessage>
             </FormControl>
@@ -134,6 +142,7 @@ const Form = () => {
             <Textarea
               variant="filled"
               value={userInput.description}
+              onFocus={focusHandler}
               onChange={changeHandler}
               name="description"
               placeholder="My name is John Doe."
@@ -145,17 +154,20 @@ const Form = () => {
         <Box my="8px" minH="96px">
           <FormControl
             isRequired
-            isInvalid={userInput.email === '' || !emailTest}
+            isInvalid={
+              userInput.email === '' || (userInput.email && !emailTest)
+            }
           >
             <FormLabel>Email</FormLabel>
             <Input
               variant="filled"
               value={userInput.email}
+              onFocus={focusHandler}
               onChange={changeHandler}
               name="email"
               placeholder="johndoe@abc.xyz"
             />
-            {userInput.email !== '' && !emailTest ? (
+            {userInput.email && !emailTest ? (
               <FormErrorMessage>
                 Please enter a valid email address.
               </FormErrorMessage>
