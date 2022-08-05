@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import {
   Flex,
+  Box,
   FormControl,
-  Text,
+  FormLabel,
+  FormErrorMessage,
   Input,
   Textarea,
   Button,
-  VStack,
 } from '@chakra-ui/react';
 
 const Form = () => {
@@ -33,74 +34,101 @@ const Form = () => {
     setSubmit(userInput);
   };
 
+  const isEmpty =
+    userInput.firstName === '' ||
+    userInput.lastName === '' ||
+    userInput.description === '' ||
+    userInput.email === '';
+
+  const emailRegEx = /^\S+@\S+\.\S+$/;
+  const emailTest = emailRegEx.test(userInput.email);
+
   return (
     <Flex
       direction="column"
       border="solid 1px"
       borderRadius="8px"
       p="20px"
-      maxW={{
-        base: '360px',
-        sm: '440px',
-        md: '720px',
-        lg: '960px',
-      }}
+      maxW={{ base: '360px', sm: '440px', md: '720px', lg: '960px' }}
     >
       <form onSubmit={submitHandler}>
-        <FormControl>
-          <Flex direction="row" wrap="wrap" justify="space-evenly" gap="8px">
-            <VStack
-              minW={{
-                base: '318px',
-                sm: '398px',
-                md: '300px',
-              }}
-            >
-              <Text>First Name</Text>
+        <Flex direction="row" wrap="wrap" justify="space-evenly" gap="8px">
+          <Box minW={{ base: '318px', sm: '398px', md: '300px' }}>
+            <FormControl isRequired isInvalid={userInput.firstName === ''}>
+              <FormLabel>First Name</FormLabel>
               <Input
+                variant="filled"
                 value={userInput.firstName}
                 onChange={changeHandler}
                 name="firstName"
+                placeholder="John"
               />
-            </VStack>
-            <VStack
-              minW={{
-                base: '318px',
-                sm: '398px',
-                md: '300px',
-              }}
-            >
-              <Text>Last Name</Text>
+              <FormErrorMessage>First name is required.</FormErrorMessage>
+            </FormControl>
+          </Box>
+
+          <Box minW={{ base: '318px', sm: '398px', md: '300px' }}>
+            <FormControl isRequired isInvalid={userInput.lastName === ''}>
+              <FormLabel>Last Name</FormLabel>
               <Input
+                variant="filled"
                 value={userInput.lastName}
                 onChange={changeHandler}
                 name="lastName"
+                placeholder="Doe"
               />
-            </VStack>
-          </Flex>
+              <FormErrorMessage>Last name is required.</FormErrorMessage>
+            </FormControl>
+          </Box>
+        </Flex>
 
-          <VStack mt="8px">
-            <Text>Description</Text>
+        <Box my="8px">
+          <FormControl isRequired isInvalid={userInput.description === ''}>
+            <FormLabel>Description</FormLabel>
             <Textarea
+              variant="filled"
               value={userInput.description}
               onChange={changeHandler}
               name="description"
+              placeholder="My name is John Doe."
             />
-          </VStack>
+            <FormErrorMessage>Please enter a description.</FormErrorMessage>
+          </FormControl>
+        </Box>
 
-          <VStack mt="8px">
-            <Text>Email</Text>
+        <Box my="8px">
+          <FormControl
+            isRequired
+            isInvalid={userInput.email === '' || !emailTest}
+          >
+            <FormLabel>Email</FormLabel>
             <Input
+              variant="filled"
               value={userInput.email}
               onChange={changeHandler}
               name="email"
+              placeholder="johndoe@abc.xyz"
             />
-          </VStack>
+            {userInput.email !== '' && !emailTest ? (
+              <FormErrorMessage>
+                Please enter a valid email address.
+              </FormErrorMessage>
+            ) : (
+              <FormErrorMessage>Email is required.</FormErrorMessage>
+            )}
+          </FormControl>
+        </Box>
 
-          <Button type="submit" m="16px">
+        <Flex justify="flex-end" mt="32px">
+          <Button
+            size="lg"
+            variant="outline"
+            type="submit"
+            isDisabled={isEmpty || !emailTest}
+          >
             Save
           </Button>
-        </FormControl>
+        </Flex>
       </form>
     </Flex>
   );
