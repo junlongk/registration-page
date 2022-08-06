@@ -1,39 +1,46 @@
-import React from 'react';
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-} from '@chakra-ui/react';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Logo } from './Logo';
+import React, { useState } from 'react';
+import { ChakraProvider, Box, Flex } from '@chakra-ui/react';
+
+import { theme } from './styles/theme';
+import Form from './components/Form';
+import SuccessfulSubmission from './components/SuccessfulSubmission';
+import EmailTemplate from './components/EmailTemplate';
 
 function App() {
+  //Toggle form submission status
+  const [submitted, setSubmitted] = useState(false);
+  //Toggle view to email template component
+  const [emailView, setEmailView] = useState(false);
+  //Store user's input
+  const [submitInput, setSubmitInput] = useState({});
+  //Store user's uploaded images
+  const [submitFiles, setSubmitFiles] = useState([]);
+
   return (
     <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl">
-        <Grid minH="100vh" p={3}>
-          <ColorModeSwitcher justifySelf="flex-end" />
-          <VStack spacing={8}>
-            <Logo h="40vmin" pointerEvents="none" />
-            <Text>
-              Edit <Code fontSize="xl">src/App.js</Code> and save to reload.
-            </Text>
-            <Link
-              color="teal.500"
-              href="https://chakra-ui.com"
-              fontSize="2xl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn Chakra
-            </Link>
-          </VStack>
-        </Grid>
+      <Box>
+        <Flex justify="center" align="center" minH="100vh" m="20px">
+          {submitted && !emailView ? (
+            <SuccessfulSubmission
+              setSubmitted={setSubmitted}
+              setEmailView={setEmailView}
+              submitInput={submitInput}
+            />
+          ) : submitted && emailView ? (
+            <EmailTemplate
+              setSubmitted={setSubmitted}
+              setEmailView={setEmailView}
+              submitInput={submitInput}
+              submitFiles={submitFiles}
+            />
+          ) : (
+            <Form
+              setSubmitted={setSubmitted}
+              setSubmitInput={setSubmitInput}
+              setSubmitFiles={setSubmitFiles}
+            />
+          )}
+        </Flex>
       </Box>
     </ChakraProvider>
   );
