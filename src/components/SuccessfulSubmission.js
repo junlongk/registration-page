@@ -8,6 +8,7 @@ import {
   Container,
   Heading,
   chakra,
+  Link,
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 import { motion, isValidMotionProp, AnimatePresence } from 'framer-motion';
@@ -16,9 +17,12 @@ const ChakraBox = chakra(motion.div, {
   shouldForwardProp: prop => isValidMotionProp(prop) || prop === 'children',
 });
 
-const SuccessfulSubmission = ({ setSubmitted, submitInput }) => {
+const SuccessfulSubmission = ({ setSubmitted, setEmailView, submitInput }) => {
   const backToForm = () => {
     setSubmitted(false);
+  };
+  const emailTemplate = () => {
+    setEmailView(true);
   };
   return (
     <AnimatePresence>
@@ -72,6 +76,22 @@ const SuccessfulSubmission = ({ setSubmitted, submitInput }) => {
         <Button colorScheme="sgxgreen" onClick={backToForm} my="24px">
           Back To Form
         </Button>
+        <Flex
+          direction="column"
+          justify="center"
+          gap="8px"
+          border="1px solid"
+          p="16px"
+          mt="32px"
+        >
+          <Text>
+            For demo purpose: Click{' '}
+            <Link fontWeight="bold" onClick={emailTemplate}>
+              here
+            </Link>{' '}
+            to go to email template.
+          </Text>
+        </Flex>
       </Flex>
     </AnimatePresence>
   );
