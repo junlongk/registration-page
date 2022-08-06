@@ -110,7 +110,9 @@ const Form = ({ setSubmitted, setSubmitInput, setSubmitFiles }) => {
         borderRadius="8px"
         p="20px"
         maxW={{ base: '360px', sm: '440px', md: '720px', lg: '960px' }}
-        boxShadow="xl"
+        boxShadow="dark-blue"
+        bg="white"
+        fontFamily="Open Sans"
       >
         <form onSubmit={submitHandler}>
           <Flex direction="row" wrap="wrap" justify="space-evenly" gap="8px">
@@ -121,7 +123,7 @@ const Form = ({ setSubmitted, setSubmitInput, setSubmitFiles }) => {
               <FormControl isRequired isInvalid={userInput.firstName === ''}>
                 <FormLabel fontWeight="bold">First Name</FormLabel>
                 <Input
-                  variant="filled"
+                  variant="flushed"
                   value={userInput.firstName}
                   onFocus={focusHandler}
                   onChange={changeHandler}
@@ -141,7 +143,7 @@ const Form = ({ setSubmitted, setSubmitInput, setSubmitFiles }) => {
               <FormControl isRequired isInvalid={userInput.lastName === ''}>
                 <FormLabel fontWeight="bold">Last Name</FormLabel>
                 <Input
-                  variant="filled"
+                  variant="flushed"
                   value={userInput.lastName}
                   onFocus={focusHandler}
                   onChange={changeHandler}
@@ -159,7 +161,7 @@ const Form = ({ setSubmitted, setSubmitInput, setSubmitFiles }) => {
             <FormControl isRequired isInvalid={userInput.description === ''}>
               <FormLabel fontWeight="bold">Description</FormLabel>
               <Textarea
-                variant="filled"
+                variant="flushed"
                 value={userInput.description}
                 onFocus={focusHandler}
                 onChange={changeHandler}
@@ -180,7 +182,7 @@ const Form = ({ setSubmitted, setSubmitInput, setSubmitFiles }) => {
             >
               <FormLabel fontWeight="bold">Email</FormLabel>
               <Input
-                variant="filled"
+                variant="flushed"
                 value={userInput.email}
                 onFocus={focusHandler}
                 onChange={changeHandler}
@@ -214,7 +216,7 @@ const Form = ({ setSubmitted, setSubmitInput, setSubmitFiles }) => {
               leftIcon={<AddIcon />}
               size="md"
               variant="outline"
-              colorScheme="green"
+              colorScheme="sgxgreen"
               onClick={uploadHandler}
               minW="140px"
               isDisabled={submitting}
@@ -233,7 +235,7 @@ const Form = ({ setSubmitted, setSubmitInput, setSubmitFiles }) => {
             <Button
               size="lg"
               variant="solid"
-              colorScheme="green"
+              colorScheme="sgxgreen"
               type="submit"
               isDisabled={isEmpty || !emailTest}
               isLoading={submitting}

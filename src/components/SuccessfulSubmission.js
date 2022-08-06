@@ -32,6 +32,7 @@ const SuccessfulSubmission = ({ setSubmitted, submitInput }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        fontFamily="Open Sans"
       >
         <ChakraBox
           initial={{
@@ -48,7 +49,7 @@ const SuccessfulSubmission = ({ setSubmitted, submitInput }) => {
         >
           <Circle
             size={{ base: '120px', sm: '200px' }}
-            bg="green"
+            bg="green.500"
             color="white"
             my="24px"
           >
@@ -68,7 +69,7 @@ const SuccessfulSubmission = ({ setSubmitted, submitInput }) => {
             for the form details.
           </Text>
         </Container>
-        <Button color="green.300" onClick={backToForm} my="24px">
+        <Button colorScheme="sgxgreen" onClick={backToForm} my="24px">
           Back To Form
         </Button>
       </Flex>

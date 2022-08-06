@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { ChakraProvider, Box, Flex, theme } from '@chakra-ui/react';
+import { ChakraProvider, Box, Flex } from '@chakra-ui/react';
 
+import { theme } from './styles/theme';
 import Form from './components/Form';
 import SuccessfulSubmission from './components/SuccessfulSubmission';
 
