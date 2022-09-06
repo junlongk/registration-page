@@ -1,18 +1,6 @@
 import React from 'react';
-import {
-  Flex,
-  Text,
-  Container,
-  Heading,
-  chakra,
-  Link,
-  Image,
-} from '@chakra-ui/react';
-import { motion, isValidMotionProp, AnimatePresence } from 'framer-motion';
-
-const ChakraBox = chakra(motion.div, {
-  shouldForwardProp: prop => isValidMotionProp(prop) || prop === 'children',
-});
+import { Flex, Text, Heading, Link, Image } from '@chakra-ui/react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const EmailTemplate = ({
   setSubmitted,
